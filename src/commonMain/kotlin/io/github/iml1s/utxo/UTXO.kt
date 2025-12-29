@@ -22,7 +22,14 @@ data class UTXO(
     val confirmed: Boolean,
     val blockHeight: Long = 0,
     val scriptPubKey: String? = null,
-    val address: String? = null
+    val address: String? = null,
+    
+    // PSBT / RBF Metadata
+    val redeemScript: String? = null,   // Hex string
+    val witnessScript: String? = null,  // Hex string
+    val derivationPath: String? = null, // e.g. m/84'/0'/0'/0/0
+    val publicKey: String? = null,      // Hex string (needed for some PSBT flows)
+    val isRbf: Boolean = false          // Whether the transaction creating this output signals RBF
 ) {
     /**
      * Returns the unique identifier for this UTXO (txid:vout format)
