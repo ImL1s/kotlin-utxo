@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.iml1s.utxo.FeeEstimatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-12-30T06:18:55.817Z" hostname="ImL1sdeMacBook-Pro.local" time="0.012">
+  <properties/>
+  <testcase name="testEstimateVirtualSize" classname="io.github.iml1s.utxo.FeeEstimatorTest" time="0.01"/>
+  <testcase name="testEstimateFeeSimple" classname="io.github.iml1s.utxo.FeeEstimatorTest" time="0.001"/>
+  <testcase name="testEstimateFee" classname="io.github.iml1s.utxo.FeeEstimatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.iml1s.utxo.FeePriorityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-30T06:18:55.830Z" hostname="ImL1sdeMacBook-Pro.local" time="0.001">
+  <properties/>
+  <testcase name="testTargetBlocks" classname="io.github.iml1s.utxo.FeePriorityTest" time="0.0"/>
+  <testcase name="testSuggestPriority" classname="io.github.iml1s.utxo.FeePriorityTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

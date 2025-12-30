@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.iml1s.utxo.UTXOTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-12-30T06:18:55.857Z" hostname="ImL1sdeMacBook-Pro.local" time="0.005">
+  <properties/>
+  <testcase name="testIsSpendable" classname="io.github.iml1s.utxo.UTXOTest" time="0.0"/>
+  <testcase name="testOutpoint" classname="io.github.iml1s.utxo.UTXOTest" time="0.005"/>
+  <testcase name="testIsDust" classname="io.github.iml1s.utxo.UTXOTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

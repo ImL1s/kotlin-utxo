@@ -11,20 +11,16 @@ version = "1.0.0"
 kotlin {
     // JVM target
     jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
 
     // Android target
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.ExperimentalStdlibApi")
-            }
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            freeCompilerArgs.add("-opt-in=kotlin.ExperimentalStdlibApi")
         }
         // Enable publishing for Android target
         publishLibraryVariants("release")
