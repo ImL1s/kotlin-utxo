@@ -1,14 +1,14 @@
 # kotlin-utxo
 
 <p align="center">
-  <img src="../docs/images/kmp_crypto_banner.png" alt="kotlin-utxo" width="100%">
+  <img src="../kotlin-blockchain-client/docs/images/hero.png" alt="kotlin-utxo Hero" width="100%">
 </p>
 
 <p align="center">
-  <a href="https://jitpack.io/#iml1s/kotlin-utxo"><img src="https://jitpack.io/v/iml1s/kotlin-utxo.svg" alt="JitPack"></a>
+  <a href="https://jitpack.io/#ImL1s/kotlin-utxo"><img src="https://jitpack.io/v/ImL1s/kotlin-utxo.svg" alt="JitPack"></a>
   <a href="#"><img src="https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin" alt="Kotlin"></a>
-  <a href="#"><img src="https://img.shields.io/badge/multiplatform-android%20%7C%20ios%20%7C%20watchOS%20%7C%20JVM-orange" alt="Multiplatform"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20watchOS%20%7C%20JVM-orange" alt="Platform"></a>
+  <a href="#"><img src="https://img.shields.io/badge/WatchOS-Supported-green?style=for-the-badge&logo=apple" alt="WatchOS Supported"></a>
 </p>
 
 <p align="center">
@@ -110,27 +110,9 @@ graph TB
 
 ## 📦 Installation
 
-### Via JitPack (Recommended)
-
-[![](https://jitpack.io/v/iml1s/kotlin-utxo.svg)](https://jitpack.io/#iml1s/kotlin-utxo)
-
 ```kotlin
-// settings.gradle.kts
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
-}
-
 // build.gradle.kts
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("com.github.iml1s:kotlin-utxo:1.0.0")
-        }
-    }
-}
+implementation("com.github.ImL1s:kotlin-utxo:0.4.0-watchos")
 ```
 
 ---
@@ -158,107 +140,9 @@ val selection = selector.select(
 )
 
 println("Selected: ${selection.inputCount} UTXOs")
-println("Total: ${selection.totalValue} sats")
-println("Change: ${selection.change} sats")
-println("Fee: ${selection.estimatedFee} sats")
 ```
-
-### Selection Strategies
-
-```kotlin
-// 🎯 Branch & Bound - Optimal selection
-selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.BRANCH_AND_BOUND)
-
-// 📏 Largest First - Minimize inputs
-selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.LARGEST_FIRST)
-
-// 🧹 Smallest First - Consolidate dust
-selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.SMALLEST_FIRST)
-
-// 🎲 Random - Better privacy
-selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.RANDOM)
-
-// 🔄 FIFO - Age-based
-selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.FIFO)
-```
-
-### Fee Estimation
-
-```kotlin
-// Simple estimation
-val fee = FeeEstimator.estimateFeeSimple(
-    inputCount = 2,
-    outputCount = 2,
-    feeRate = 10,
-    scriptType = ScriptType.P2WPKH
-)
-
-// Fee priority levels
-val rates = FeeRates(
-    economy = 1,    // ~24 hours
-    low = 2,        // ~6 hours
-    medium = 5,     // ~1 hour
-    high = 10,      // ~30 minutes
-    urgent = 20     // Next block
-)
-```
-
----
-
-## ⚙️ Configuration
-
-```kotlin
-val config = UTXOSelectionConfig(
-    strategy = UTXOSelectionStrategy.BRANCH_AND_BOUND,
-    dustThreshold = 546L,       // Minimum UTXO value
-    includeUnconfirmed = false, // Only confirmed UTXOs
-    maxInputs = 100,            // Maximum inputs
-    minConfirmations = 1        // Required confirmations
-)
-
-val selector = UTXOSelector(config)
-
-// Pre-defined configurations
-val lowFee = UTXOSelector(UTXOSelectionConfig.lowFee())
-val consolidate = UTXOSelector(UTXOSelectionConfig.consolidate())
-val privacy = UTXOSelector(UTXOSelectionConfig.privacy())
-```
-
----
-
-## 📊 Script Types
-
-| Type | Description | Address Prefix |
-|------|-------------|----------------|
-| `P2PKH` | Legacy | `1...` |
-| `P2SH` | Script Hash | `3...` |
-| `P2WPKH` | Native SegWit | `bc1q...` |
-| `P2WSH` | Witness Script Hash | `bc1q...` |
-| `P2TR` | Taproot | `bc1p...` |
-
----
-
-## 📚 API Reference
-
-| Class | Purpose |
-|-------|---------|
-| `UTXO` | Unspent transaction output model |
-| `UTXOSelection` | Selection result |
-| `UTXOSelector` | Main selection class |
-| `UTXOSelectionConfig` | Configuration options |
-| `FeeEstimator` | Fee calculation utilities |
-| `FeeRates` | Fee priority levels |
 
 ---
 
 ## 📄 License
-
-```
-Copyright 2024 ImL1s
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-```
+MIT License
