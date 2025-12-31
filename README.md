@@ -61,7 +61,7 @@ This library handles the complexity of UTXO selection automatically.
 
 | Feature | Description |
 |---------|-------------|
-| **5 Selection Strategies** | Largest-first, smallest-first, branch-and-bound, random, FIFO |
+| **5 Selection Strategies** | BnB (Zero-change optimization), Largest-first, Smallest-first, Random, FIFO |
 | **Accurate Fee Estimation** | Virtual byte calculation for SegWit |
 | **Dust Protection** | Automatic filtering of uneconomical UTXOs |
 | **Confirmation Control** | Filter by confirmation count |
@@ -166,7 +166,7 @@ println("Fee: ${selection.estimatedFee} sats")
 ### Selection Strategies
 
 ```kotlin
-// 🎯 Branch & Bound - Optimal selection
+// 🎯 Branch & Bound (Recommended) - Finds Zero-Change combination if possible
 selector.select(utxos, 50_000, 10, strategy = UTXOSelectionStrategy.BRANCH_AND_BOUND)
 
 // 📏 Largest First - Minimize inputs
@@ -213,7 +213,8 @@ val config = UTXOSelectionConfig(
     dustThreshold = 546L,       // Minimum UTXO value
     includeUnconfirmed = false, // Only confirmed UTXOs
     maxInputs = 100,            // Maximum inputs
-    minConfirmations = 1        // Required confirmations
+    minConfirmations = 1,       // Required confirmations
+    maxBranchAndBoundTries = 100_000 // Limit search depth
 )
 
 val selector = UTXOSelector(config)

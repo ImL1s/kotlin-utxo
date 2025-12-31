@@ -225,82 +225,77 @@ class UTXOSelector(
     }
 
     /**
-     * Branch and Bound algorithm - finds optimal or near-optimal selection.
+     * Branch and Bound algorithm - finds optimal selection to avoid change.
      *
-     * This algorithm attempts to find a subset of UTXOs that matches the target
-     * amount as closely as possible, potentially eliminating the need for a change output.
+     * This implementation is inspired by Bitcoin Core's BnB. It tries to find a combination
+     * of UTXOs that matches the target amount + fees exactly, so no change output is needed.
      */
     private fun selectBranchAndBound(
         utxos: List<UTXO>,
         targetAmount: Long,
         feeRate: Long
     ): UTXOSelection {
-        var tries = 0
+        // Sort UTXOs by value descending for better pruning
+        val sortedUtxos = utxos.sortedByDescending { it.value }
+        
+        var bestSelection: List<UTXO>? = null
+        var minWaste = Long.MAX_VALUE
         val maxTries = config.maxBranchAndBoundTries
+        var currentTries = 0
 
-        val initialFee = estimateFee(
-            inputCount = 2, // Initial estimate
-            outputCount = 2,
-            feeRate = feeRate
-        )
-        val targetWithFee = targetAmount + initialFee
-
-        var bestSet: List<UTXO>? = null
-        var bestValue = Long.MAX_VALUE
-
-        // Limit search depth for performance
-        val searchUTXOs = utxos
-            .sortedByDescending { it.value }
-            .take(15)
+        // Cost of adding a change output (we want to avoid this)
+        val costOfChange = estimateFee(0, 1, feeRate)
 
         fun search(
-            available: List<UTXO>,
-            selected: List<UTXO>,
+            index: Int,
             currentValue: Long,
-            depth: Int
+            selected: MutableList<UTXO>
         ) {
-            tries++
-            if (tries > maxTries) return
+            currentTries++
+            if (currentTries > maxTries) return
 
-            if (currentValue >= targetWithFee) {
-                val actualFee = estimateFee(selected.size, 2, feeRate)
-                val actualTarget = targetAmount + actualFee
+            // Calculate current fee based on selected inputs (no change output)
+            val currentFee = estimateFee(selected.size, 1, feeRate)
+            val targetWithFee = targetAmount + currentFee
+            val targetRangeMax = targetWithFee + costOfChange
 
-                if (currentValue >= actualTarget && currentValue < bestValue) {
-                    bestSet = selected.toList()
-                    bestValue = currentValue
+            // If we are over the range, backtrack
+            if (currentValue > targetRangeMax) return
+
+            // If we found a valid selection in range [targetWithFee, targetRangeMax]
+            if (currentValue >= targetWithFee && currentValue <= targetRangeMax) {
+                val waste = currentValue - targetWithFee
+                if (waste < minWaste) {
+                    minWaste = waste
+                    bestSelection = ArrayList(selected)
                 }
-                return
+                // Continue searching for potentially better matches
             }
 
-            if (depth >= available.size) return
+            // End of UTXO list
+            if (index >= sortedUtxos.size) return
 
-            // Include current UTXO
-            search(
-                available,
-                selected + available[depth],
-                currentValue + available[depth].value,
-                depth + 1
-            )
+            // Recursive branch: Inclusion
+            selected.add(sortedUtxos[index])
+            search(index + 1, currentValue + sortedUtxos[index].value, selected)
+            selected.removeAt(selected.size - 1)
 
-            // Exclude current UTXO
-            search(available, selected, currentValue, depth + 1)
+            // Recursive branch: Exclusion
+            search(index + 1, currentValue, selected)
         }
 
-        search(searchUTXOs, emptyList(), 0, 0)
+        search(0, 0, mutableListOf())
 
-        return bestSet?.let { set ->
-            val total = set.sumOf { it.value }
-            val fee = estimateFee(set.size, 2, feeRate)
-            val change = total - targetAmount - fee
-
+        return bestSelection?.let { selection ->
+            val total = selection.sumOf { it.value }
+            val fee = estimateFee(selection.size, 1, feeRate) // No change output
             UTXOSelection(
-                selectedUTXOs = set,
+                selectedUTXOs = selection,
                 totalValue = total,
-                change = if (change >= config.dustThreshold) change else 0,
-                estimatedFee = if (change < config.dustThreshold) fee + change else fee
+                change = 0,
+                estimatedFee = total - targetAmount
             )
-        } ?: selectLargestFirst(utxos, targetAmount, feeRate)
+        } ?: selectLargestFirst(utxos, targetAmount, feeRate) // Fallback to Largest First (will have change)
     }
 
     /**
