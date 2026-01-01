@@ -34,6 +34,7 @@ kotlin {
     // watchOS targets
     watchosArm64()
     watchosSimulatorArm64()
+    watchosX64()
 
     sourceSets {
         val commonMain by getting {
