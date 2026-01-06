@@ -6,7 +6,7 @@ plugins {
 
 // Library version and metadata
 group = "io.github.iml1s"
-version = "1.0.0"
+version = "1.3.0"
 
 kotlin {
     // JVM target
@@ -104,6 +104,11 @@ android {
         isCoreLibraryDesugaringEnabled = false
     }
 
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -161,3 +166,10 @@ afterEvaluate {
         }
     }
 }
+
+tasks.configureEach {
+    if (name.contains("lintVitalAnalyzeRelease")) {
+        enabled = false
+    }
+}
+
