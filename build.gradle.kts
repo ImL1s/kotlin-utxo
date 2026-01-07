@@ -23,7 +23,7 @@ kotlin {
             freeCompilerArgs.add("-opt-in=kotlin.ExperimentalStdlibApi")
         }
         // Enable publishing for Android target
-        publishLibraryVariants("release")
+        publishLibraryVariants("release", "debug")
     }
 
     // iOS targets
@@ -168,7 +168,11 @@ afterEvaluate {
 }
 
 tasks.configureEach {
-    if (name.contains("lintVitalAnalyzeRelease")) {
+    if (name.contains("lintVitalAnalyzeRelease") || 
+        name.contains("generateDebugAndroidTestLintModel") ||
+        name.contains("lintReportDebug") || 
+        name.contains("lintReportRelease") ||
+        name == "lintDebug") {
         enabled = false
     }
 }
